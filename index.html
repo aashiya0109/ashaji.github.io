@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Name | Astro Portfolio</title>
+    <style>
+        /* 1. Global Reset & Body Styling */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            /* This is where we set the deep field background */
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            overflow: hidden; /* We handle scrolling inside the content panel */
+        }
+
+        /* 2. Page Layout: Main Container */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            backdrop-filter: blur(2px) brightness(60%); /* Slight blur on background for readability */
+        }
+
+        /* 3. Site Header (Name) */
+        header {
+            margin-top: 2rem;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 300;
+        }
+
+        /* 4. The Tab Navigation */
+        nav.tab-navigation {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 10px;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 5px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 10px 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border-radius: 40px;
+        }
+
+        .tab-button:hover {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Styling for the currently active tab */
+        .tab-button.active {
+            color: #000;
+            background-color: #fff;
+            font-weight: 600;
+        }
+
+        /* 5. The Content Panels */
+        .content-display {
+            margin-top: 2rem;
+            width: 90%;
+            max-width: 900px;
+            background-color: rgba(10, 10, 15, 0.9); /* Semi-transparent dark blue-black */
+            border-radius: 12px;
+            padding: 2rem;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            height: 60vh; /* Set height for panel scrolling */
+            overflow-y: auto; /* Enable vertical scroll inside the panel */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Hide content panels by default */
+        .content-panel {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Show the panel that corresponds to the active tab */
+        .content-panel.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* 6. Typical Styling for Text Inside Panels */
+        .content-panel h2 {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.5rem;
+            color: #fff;
+            font-weight: 400;
+        }
+
+        .content-panel p, .content-panel li {
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        a.contact-link {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+
+    <header>
+        <h1>YOUR NAME</h1>
+    </header>
+
+    <!-- Tab Buttons -->
+    <nav class="tab-navigation">
+        <button class="tab-button active" onclick="openTab('about')">About Me</button>
+        <button class="tab-button" onclick="openTab('cv')">CV</button>
+        <button class="tab-button" onclick="openTab('publications')">Publications</button>
+        <button class="tab-button" onclick="openTab('projects')">Projects</button>
+    </nav>
+
+    <!-- Content Sections -->
+    <div class="content-display">
+
+        <!-- PANEL: ABOUT ME (Default Active) -->
+        <section id="about" class="content-panel active">
+            <h2>About Me</h2>
+            <p>Welcome. I am a researcher/developer focused on [Your Field]. I use this space to share my academic journey, publications, and technical projects.</p>
+            <p>I specialize in [Specialization 1], [Specialization 2], and data analysis.</p>
+            <p>Contact: <a href="mailto:your.email@address.com" class="contact-link">your.email@address.com</a></p>
+        </section>
+
+        <!-- PANEL: CV -->
+        <section id="cv" class="content-panel">
+            <h2>Curriculum Vitae</h2>
+            <p>A summary of my education and experience.</p>
+            <h3>Education</h3>
+            <ul>
+                <li><strong>Ph.D. in Astronomy</strong>, [University Name], [Year]</li>
+                <li><strong>M.Sc. in Physics</strong>, [University Name], [Year]</li>
+            </ul>
+            <h3>Experience</h3>
+            <ul>
+                <li><strong>Postdoctoral Fellow</strong>, [Institution], [Years]</li>
+            </ul>
+        </section>
+
+        <!-- PANEL: PUBLICATIONS -->
+        <section id="publications" class="content-panel">
+            <h2>Publications</h2>
+            <p>Selected journal articles and conference papers.</p>
+            <ul>
+                <li>[Your Name], et al. "Title of Your Best Paper." <em>The Astrophysical Journal</em>, 2024. [Link]</li>
+                <li>[Your Name], et al. "Title of Another Important Paper." <em>MNRAS</em>, 2023.</li>
+            </ul>
+        </section>
+
+        <!-- PANEL: PROJECTS -->
+        <section id="projects" class="content-panel">
+            <h2>Projects</h2>
+            <p>Highlighted technical projects and code repositories.</p>
+            <ul>
+                <li><strong>Project Name 1:</strong> A brief description of what you built. [GitHub Link]</li>
+                <li><strong>Project Name 2:</strong> Description of the project purpose and stack.</li>
+            </ul>
+        </section>
+
+    </div>
+
+</div>
+
+<!-- Small JavaScript function to handle the tab switching -->
+<script>
+    function openTab(tabId) {
+        // 1. Hide all content panels
+        var panels = document.querySelectorAll('.content-panel');
+        panels.forEach(function(panel) {
+            panel.classList.remove('active');
+        });
+
+        // 2. Remove 'active' class from all buttons
+        var buttons = document.querySelectorAll('.tab-button');
+        buttons.forEach(function(button) {
+            button.classList.remove('active');
+        });
+
+        // 3. Show the requested panel
+        document.getElementById(tabId).classList.add('active');
+
+        // 4. Set the clicked button to active
+        // (This finds the button that was clicked based on its onclick)
+        event.currentTarget.classList.add('active');
+    }
+</script>
+
+</body>
+</html>
