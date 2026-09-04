@@ -44,7 +44,14 @@
             text-transform: uppercase;
             letter-spacing: 4px;
             font-weight: 300;
+	    text-transform: none;
         }
+
+	/* Custom color for specific text inside span */
+	header h1 .highlight-blue {
+    		color: #00008B; /* navy blue (stands out nicely on dark backgrounds) */
+    		font-weight: 500; /* Optional: slightly bolder */
+	}
 
         /* 4. The Tab Navigation */
         nav.tab-navigation {
@@ -135,7 +142,7 @@
 <div class="main-container">
 
     <header>
-        <h1>YOUR NAME</h1>
+        <h1>AASHIYA <span class="highlight-blue">ANITHA SHAJI</span></h1>
     </header>
 
     <!-- Tab Buttons -->
@@ -152,40 +159,88 @@
         <!-- PANEL: ABOUT ME (Default Active) -->
         <section id="about" class="content-panel active">
             <h2>About Me</h2>
-            <p>Welcome. I am a researcher/developer focused on [Your Field]. I use this space to share my academic journey, publications, and technical projects.</p>
-            <p>I specialize in [Specialization 1], [Specialization 2], and data analysis.</p>
-            <p>Contact: <a href="mailto:your.email@address.com" class="contact-link">your.email@address.com</a></p>
+            <p>I am a postdoctoral researcher at the Astronomical Institute of the Czech Academy of Sciences in Prague, where I work as part of the <strong>ALMA-JELLY Collaboration</strong>. </p>
+            <p>My research focuses on understanding the physical processes regulating star formation across various galactic environments, spanning internal stellar feedback in isolated galaxies to environmental drivers like ram pressure stripping in nearby galaxy clusters. </p>
+            <p>Contact: <a href="mailto:aashiya.shaji@asu.cas.cz" class="contact-link">aashiya.shaji@asu.cas.cz</a></p>
         </section>
 
         <!-- PANEL: CV -->
-        <section id="cv" class="content-panel">
-            <h2>Curriculum Vitae</h2>
-            <p>A summary of my education and experience.</p>
-            <h3>Education</h3>
-            <ul>
-                <li><strong>Ph.D. in Astronomy</strong>, [University Name], [Year]</li>
-                <li><strong>M.Sc. in Physics</strong>, [University Name], [Year]</li>
-            </ul>
-            <h3>Experience</h3>
-            <ul>
-                <li><strong>Postdoctoral Fellow</strong>, [Institution], [Years]</li>
-            </ul>
-        </section>
+	<section id="cv" class="content-panel">
+    		<h2>Curriculum Vitae</h2>
+    		<p>
+        		<a href="cv.pdf" target="_blank" class="contact-link">📄 Download PDF Version</a>
+    		</p>
+    
+    		<!-- PDF Viewer Embed -->
+    		<iframe src="cv.pdf" width="100%" height="500px" style="border: none; border-radius: 8px;">
+        		This browser does not support inline PDFs. <a href="cv.pdf">Click here to download the PDF.</a>
+    		</iframe>
+	</section>
+        
 
         <!-- PANEL: PUBLICATIONS -->
-        <section id="publications" class="content-panel">
-            <h2>Publications</h2>
-            <p>Selected journal articles and conference papers.</p>
-            <ul>
-                <li>[Your Name], et al. "Title of Your Best Paper." <em>The Astrophysical Journal</em>, 2024. [Link]</li>
-                <li>[Your Name], et al. "Title of Another Important Paper." <em>MNRAS</em>, 2023.</li>
-            </ul>
-        </section>
+
+	<section id="publications" class="content-panel">
+    <h2>Publications</h2>
+
+    <!-- 1. Heading introducing your publications -->
+    <p><strong>Recent First Author Publications:</strong></p>
+
+    <!-- 2. Empty container where JavaScript will insert your ORCID list -->
+    <div id="orcid-works">Loading publications from ORCID...</div>
+
+    <!-- 3. Button link to your full NASA/ADS search results at the bottom -->
+    <p style="margin-top: 1.5rem;">
+        <a href="https://ui.adsabs.harvard.edu/search/fq=%7B!type%3Daqp%20v%3D%24fq_database%7D&fq_database=(database%3Aastronomy%20OR%20database%3Aphysics)&q=%20%20author%3A%22Anitha%20Shaji%2C%20A%22&sort=date%20desc%2C%20bibcode%20desc&p_=0" target="_blank" class="contact-link">
+            🚀 View Complete Publication List on NASA/ADS
+        </a>
+    </p>
+
+    <!-- 4. JavaScript that fetches the data behind the scenes -->
+    <script>
+        // Send an HTTP request to ORCID's public API for your ID
+        fetch('https://pub.orcid.org/v3.0/0009-0003-4678-1228/works', {
+            headers: { 'Accept': 'application/json' } // Asks ORCID to reply with raw data (JSON format)
+        })
+        .then(response => response.json()) // Converts ORCID's raw reply into usable JavaScript data
+        .then(data => {
+            let container = document.getElementById('orcid-works');
+            let groups = data['group'];
+
+            // Check if any works exist; if not, show a fallback message
+            if (!groups || groups.length === 0) {
+                container.innerHTML = '<p>Check back soon for updated publications or visit my <a href="https://orcid.org/0009-0003-4678-1228" target="_blank" class="contact-link">ORCID Profile</a>.</p>';
+                return;
+            }
+
+            // Build an HTML bulleted list (<ul>) out of the data
+            let html = '<ul>';
+            groups.forEach(group => {
+                let summary = group['work-summary'][0];
+                let title = summary['title']['title']['value'];
+                let year = summary['publication-date'] ? summary['publication-date']['year']['value'] : '';
+                
+                // Add an <li> item for each publication
+                html += `<li><strong>${title}</strong> (${year})</li>`;
+            });
+            html += '</ul>';
+
+            // Replace "Loading publications..." with the finished HTML list
+            container.innerHTML = html;
+        })
+        .catch(err => {
+            // If the network request fails, show a helpful fallback link
+            document.getElementById('orcid-works').innerHTML = '<p>View publications on <a href="https://orcid.org/0009-0003-4678-1228" target="_blank" class="contact-link">ORCID</a> or <a href="https://ui.adsabs.harvard.edu/search/fq=%7B!type%3Daqp%20v%3D%24fq_database%7D&fq_database=(database%3Aastronomy%20OR%20database%3Aphysics)&q=%20%20author%3A%22Anitha%20Shaji%2C%20A%22&sort=date%20desc%2C%20bibcode%20desc&p_=0" target="_blank" class="contact-link">NASA/ADS</a>.</p>';
+        });
+    </script>
+</section>
 
         <!-- PANEL: PROJECTS -->
         <section id="projects" class="content-panel">
             <h2>Projects</h2>
-            <p>Highlighted technical projects and code repositories.</p>
+            <p><strong>Analysis of ALMA JELLY galaxies</strong></p>
+            
+            <p>ALMA JELLY is a Large Program (2021.1.01616.L; PI: Jáchym, coPI: Ming Sun, Masafumi Yagi) to investigate the cold molecular gas contents traced by carbon monoxide (CO 2--1) line transition with ALMA Band 6 observations in jellyfish galaxies in nearby galaxy clusters Coma, Leo, and Norma. By focussing on one of these galaxies, ESO 137-001 in the Norma Cluster, I probe atomic and molecular gas under different excitation conditions and understand its potential transformation into stars.</p>
             <ul>
                 <li><strong>Project Name 1:</strong> A brief description of what you built. [GitHub Link]</li>
                 <li><strong>Project Name 2:</strong> Description of the project purpose and stack.</li>
