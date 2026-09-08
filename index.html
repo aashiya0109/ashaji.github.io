@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Name | Astro Portfolio</title>
+    <style>
+        /* 1. Global Reset & Body Styling */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            /* This is where we set the deep field background */
+            background-image: url('mw.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            overflow: hidden; /* We handle scrolling inside the content panel */
+        }
+
+        /* 2. Page Layout: Main Container */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+           /* backdrop-filter: blur(2px) brightness(60%); /* Slight blur on background for readability */
+        }
+
+        /* 3. Site Header (Name) */
+        header {
+            margin-top: 2rem;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 300;
+	    text-transform: none;
+        }
+
+	/* Custom color for specific text inside span */
+	header h1 .highlight-blue {
+    		color: #650b11; /* 00008B; navy blue (stands out nicely on dark backgrounds) */
+    		font-weight: 800; /* Optional: slightly bolder */
+	}
+        header h1 {
+        margin: 0;
+        font-size: 3rem;
+        letter-spacing: 4px;
+        font-weight: 800;
+        text-transform: none;
+        
+        /* 1. "AASHIYA": White fill with a burgundy border */
+        color: #ffffff;
+        -webkit-text-stroke: 1.5px #650b11;
+    }
+
+    header h1 .highlight-blue {
+        /* 2. "ANITHA SHAJI": Burgundy fill with a white border */
+        color: #650b11;
+        -webkit-text-stroke: 1px #ffffff;
+        font-weight: 800;
+    }
+
+        /* 4. The Tab Navigation */
+        nav.tab-navigation {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 10px;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 5px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 10px 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border-radius: 40px;
+        }
+
+        .tab-button:hover {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Styling for the currently active tab */
+        .tab-button.active {
+            color: #000;
+            background-color: #fff;
+            font-weight: 600;
+        }
+
+        /* 5. The Content Panels */
+        .content-display {
+            margin-top: 2rem;
+            width: 95%;
+            max-width: 900px; /* Standard width for text-heavy tabs */
+            background-color: rgba(10, 10, 15, 0.6);
+            border-radius: 12px;
+            padding: 2rem;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            height: 60vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            transition: max-width 0.4s ease; /* Smooth animation when switching tabs */
+        }
+
+        /* 2. Expand width to 1500px ONLY when Projects tab is active */
+        .content-display:has(#projects.active) {
+            max-width: 1500px;
+        }
+        /* Hide content panels by default */
+        .content-panel {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Show the panel that corresponds to the active tab */
+        .content-panel.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* 6. Typical Styling for Text Inside Panels */
+        .content-panel h2 {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.5rem;
+            color: #650b11;
+            -webkit-text-stroke: 0.7px #ffffff;
+            font-weight: 800;
+        }
+
+        .content-panel p, .content-panel li {
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        a.contact-link {
+            color: #fff;
+            text-decoration: underline;
+        }
+        /* Layout container for each project card */
+    /* Container holding all project boxes */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        /* Individual Project Box / Window */
+        .project-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Thumbnail inside the project box */
+        .project-thumbnail {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .project-thumbnail:hover {
+            transform: scale(1.02);
+            border-color: #4da6ff;
+        }
+
+        /* Typography inside project boxes */
+        .project-details h3 {
+            margin: 0 0 0.75rem 0;
+            font-size: 1.25rem;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .project-details p {
+            font-size: 0.92rem;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+
+    /* Fullscreen Lightbox (<dialog>) Styling */
+    #image-modal {
+        padding: 0;
+        border: none;
+        background: transparent;
+        max-width: 90vw;
+        max-height: 90vh;
+        outline: none;
+        cursor: pointer;
+    }
+
+    #image-modal::backdrop {
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(5px);
+    }
+
+    #modal-img {
+        max-width: 90vw;
+        max-height: 85vh;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        display: block;
+        margin: 0 auto;
+    }
+
+    .modal-close-hint {
+        display: block;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.85rem;
+        margin-top: 10px;
+    }
+
+    /* Enable vertical flex distribution for the About panel */
+        #about.content-panel {
+            display: none; /* Default hidden state handled by your JS */
+            flex-direction: column;
+            min-height: 100%; /* Spans the full inner height of content-display */
+            box-sizing: border-box;
+        }
+
+        /* Ensure the display property stays 'flex' when active (overriding display: block) */
+        #about.content-panel.active {
+            display: flex;
+        }
+    /* Background Image Credit Footnote */
+    .bg-credit {
+        margin-top: auto;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.55);
+        letter-spacing: 0.3px;
+    }
+    </style>
+    
+</head>
+<body>
+
+<div class="main-container">
+
+    <header>
+        <h1>AASHIYA <span class="highlight-blue">ANITHA SHAJI</span></h1>
+    </header>
+
+    <!-- Tab Buttons -->
+    <nav class="tab-navigation">
+        <button class="tab-button active" onclick="openTab('about')">About Me</button>
+        <button class="tab-button" onclick="openTab('cv')">CV</button>
+        <button class="tab-button" onclick="openTab('publications')">Publications</button>
+        <button class="tab-button" onclick="openTab('projects')">Projects</button>
+    </nav>
+
+    <!-- Content Sections -->
+    <div class="content-display">
+
+        <!-- PANEL: ABOUT ME (Default Active) -->
+        <section id="about" class="content-panel active">
+            <h2>About Me</h2>
+            <p>I am a postdoctoral researcher at the Astronomical Institute of the Czech Academy of Sciences in Prague, where I work as part of the <strong>ALMA-JELLY Collaboration</strong>. </p>
+            <p>My research focuses on understanding the physical processes regulating star formation across various galactic environments, spanning internal stellar feedback in isolated galaxies to environmental drivers like ram pressure stripping in nearby galaxy clusters. </p>
+            <p>Contact: <a href="mailto:aashiya.shaji@asu.cas.cz" class="contact-link">aashiya.shaji@asu.cas.cz</a></p>
+            <p class="bg-credit">
+                🌌 <em>Background image: The Milky Way over Alca&ntilde;iz, Spain (Aug 2026) &mdash; Photo credit: David Kom&aacute;nek.</em>
+            </p>
+        </section>
+
+        <!-- PANEL: CV -->
+	<section id="cv" class="content-panel">
+    		<h2>Curriculum Vitae</h2>
+    		<p>
+        		<a href="cv.pdf" target="_blank" class="contact-link">📄 Download PDF Version</a>
+    		</p>
+    
+    		<!-- PDF Viewer Embed -->
+    		<iframe src="cv.pdf" width="100%" height="500px" style="border: none; border-radius: 8px;">
+        		This browser does not support inline PDFs. <a href="cv.pdf">Click here to download the PDF.</a>
+    		</iframe>
+	</section>
+        
+
+        <!-- PANEL: PUBLICATIONS -->
+
+	<section id="publications" class="content-panel">
+    <h2>Publications</h2>
+
+    <!-- 1. Heading introducing your publications -->
+    <p><strong>Recent First Author Publications:</strong></p>
+
+    <!-- 2. Empty container where JavaScript will insert your ORCID list -->
+    <div id="orcid-works">Loading publications from ORCID...</div>
+
+    <!-- 3. Button link to your full NASA/ADS search results at the bottom -->
+    <p style="margin-top: 1.5rem;">
+        <a href="https://ui.adsabs.harvard.edu/search/fq=%7B!type%3Daqp%20v%3D%24fq_database%7D&fq_database=(database%3Aastronomy%20OR%20database%3Aphysics)&q=%20%20author%3A%22Anitha%20Shaji%2C%20A%22&sort=date%20desc%2C%20bibcode%20desc&p_=0" target="_blank" class="contact-link">
+            🚀 View Complete Publication List on NASA/ADS
+        </a>
+    </p>
+
+    <!-- 4. JavaScript that fetches the data behind the scenes -->
+    <script>
+        // Send an HTTP request to ORCID's public API for your ID
+        fetch('https://pub.orcid.org/v3.0/0009-0003-4678-1228/works', {
+            headers: { 'Accept': 'application/json' } // Asks ORCID to reply with raw data (JSON format)
+        })
+        .then(response => response.json()) // Converts ORCID's raw reply into usable JavaScript data
+        .then(data => {
+            let container = document.getElementById('orcid-works');
+            let groups = data['group'];
+
+            // Check if any works exist; if not, show a fallback message
+            if (!groups || groups.length === 0) {
+                container.innerHTML = '<p>Check back soon for updated publications or visit my <a href="https://orcid.org/0009-0003-4678-1228" target="_blank" class="contact-link">ORCID Profile</a>.</p>';
+                return;
+            }
+
+            // Build an HTML bulleted list (<ul>) out of the data
+            let html = '<ul>';
+            groups.forEach(group => {
+                let summary = group['work-summary'][0];
+                let title = summary['title']['title']['value'];
+                let year = summary['publication-date'] ? summary['publication-date']['year']['value'] : '';
+                
+                // Add an <li> item for each publication
+                html += `<li><strong>${title}</strong> (${year})</li>`;
+            });
+            html += '</ul>';
+
+            // Replace "Loading publications..." with the finished HTML list
+            container.innerHTML = html;
+        })
+        .catch(err => {
+            // If the network request fails, show a helpful fallback link
+            document.getElementById('orcid-works').innerHTML = '<p>View publications on <a href="https://orcid.org/0009-0003-4678-1228" target="_blank" class="contact-link">ORCID</a> or <a href="https://ui.adsabs.harvard.edu/search/fq=%7B!type%3Daqp%20v%3D%24fq_database%7D&fq_database=(database%3Aastronomy%20OR%20database%3Aphysics)&q=%20%20author%3A%22Anitha%20Shaji%2C%20A%22&sort=date%20desc%2C%20bibcode%20desc&p_=0" target="_blank" class="contact-link">NASA/ADS</a>.</p>';
+        });
+    </script>
+</section>
+
+ <!-- PANEL: PROJECTS -->
+<section id="projects" class="content-panel">
+    <h2>Projects</h2>
+
+    <div class="projects-grid">
+
+        <!-- PROJECT BOX 1: ALMA-JELLY -->
+        <div class="project-card">
+            <div>
+                <img src="alma-jelly_thumbnail.jpeg" 
+                     alt="ESO 137-001 ALMA Observation" 
+                     class="project-thumbnail" 
+                     onclick="openModal(this)">
+                
+                <div class="project-details">
+                    <h3>Analysis of ALMA-JELLY Galaxies</h3>
+                    <p>
+                        Ram pressure stripping is a primary environmental driver of galaxy evolution in dense clusters, where high-speed passage through the intracluster medium (ICM) removes gas and quenches star formation. ALMA-JELLY is an ALMA Large Program (2021.1.01616.L; PI: P. J&aacute;chym) designed to trace cold molecular gas by mapping CO(2&ndash;1) line transitions across stripped jellyfish galaxies.
+                    </p>
+                    <p>
+                        Focusing on <strong>ESO 137-001</strong> in the Norma Cluster, I combine multi-configuration ALMA interferometry with single-dish data to recover molecular gas emission across all spatial scales. By incorporating multi-line submillimeter observations (including APEX transitions) and mid-infrared dust tracers, I apply non-LTE radiative transfer modeling and spatial correlation techniques to examine how extreme hydrodynamic stripping alters ISM physics and regulates star formation efficiency.
+                    </p>
+                </div>
+            </div>
+        </div>
+    
+        <!-- PROJECT BOX 2: GALACTIC FOUNTAINS -->
+        <div class="project-card">
+            <div>
+                <img src="RGB_HI_Ha_FUV.jpg" 
+                     alt="M101 Stellar Feedback Analysis" 
+                     class="project-thumbnail" 
+                     onclick="openModal(this)">
+                
+                <div class="project-details">
+                    <h3>Investigating Galactic Fountains in M101</h3>
+                    <p>
+                        Galactic fountains are a key stellar feedback mechanism driven by clustered supernovae in OB associations. These energetic events heat gas to coronal temperatures (~10<sup>6</sup> K) and blow out bubbles in the interstellar medium, sweeping away surrounding neutral hydrogen (H&nbsp;I). If the outflow velocity is below the galaxy's escape velocity, this gas rises above the disk, cools in the halo, and eventually rains back down.
+                    </p>
+                    <p>
+                        While spiral galaxies consume gas through steady star formation (~2 M<sub>&#9737;</sub> yr<sup>-1</sup>), this fountain cycle temporarily regulates gas availability on timescales of tens to hundreds of megayears. To observationally map this feedback loop, I developed a multi-wavelength scoring scheme using VLT H&nbsp;I, GALEX FUV, and SITELLE H&alpha; data to pinpoint nine active fountain sites in face-on spiral galaxy, M101.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROJECT BOX 3: Damped Lyman Alpha -->
+        <div class="project-card">
+            <div>
+                <img src="3.287physical.jpg" 
+                     alt="CLOUDY DLA modelling" 
+                     class="project-thumbnail" 
+                     onclick="openModal(this)">
+                
+                <div class="project-details">
+                    <h3>CLOUDY & Bayesian Modelling of High-Redshift (z > 3) H<sub>2</sub>-DLAs</h3>
+                    <p>
+                        Damped Lyman-&alpha; (DLA) absorbers containing molecular hydrogen (H<sub>2</sub>) probe the dense, star-forming phase of the interstellar medium in high-redshift galaxy progenitors. As part of my Master's thesis, I conducted detailed photoionization modeling and Bayesian inference on six of the most distant known H<sub>2</sub>-DLAs (3 < z < 4.5) observed via high-resolution quasar spectroscopy.
+                    </p>
+                    <p>
+                        Moving beyond traditional constant-density approximations, I constructed a constant-pressure multiphase cloud model using <strong>CLOUDY</strong>, simultaneously constraining atomic/molecular species, H<sub>2</sub> rotational populations, and CI fine-structure levels. This analysis yielded tight constraints on local physical conditions, including interstellar radiation fields, cosmic ray ionization rates, and gas pressures, revealing signatures of active in situ star formation in the early Universe.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Small JavaScript function to handle the tab switching -->
+<script>
+    function openTab(tabId) {
+        // 1. Hide all content panels
+        var panels = document.querySelectorAll('.content-panel');
+        panels.forEach(function(panel) {
+            panel.classList.remove('active');
+        });
+
+        // 2. Remove 'active' class from all buttons
+        var buttons = document.querySelectorAll('.tab-button');
+        buttons.forEach(function(button) {
+            button.classList.remove('active');
+        });
+
+        // 3. Show the requested panel
+        document.getElementById(tabId).classList.add('active');
+
+        // 4. Set the clicked button to active
+        // (This finds the button that was clicked based on its onclick)
+        event.currentTarget.classList.add('active');
+    }
+    function openModal(imgElement) {
+    const modal = document.getElementById('image-modal');
+    const modalImg = document.getElementById('modal-img');
+    modalImg.src = imgElement.src;
+    modal.showModal();
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('image-modal');
+        modal.close();
+    }
+</script>
+
+<!-- Native Lightbox Modal Container -->
+<dialog id="image-modal" onclick="closeModal()">
+    <img id="modal-img" src="" alt="Expanded View">
+    <span class="modal-close-hint">Click anywhere to close</span>
+</dialog>
+
+</body>
+</html>
